@@ -19,13 +19,13 @@ describe('Load session access', () => {
     sample.should.have.property('delete');
     sample.should.have.property('read');
   });
-  it('loads res.user model', () => {
-    return model.Record.create(session, 'res.user');
+  it('loads a model', () => {
+    return model.utils.loadModel(session, 'ir.model');
   });
-  it('checks model', () => {
+  it('checks user model', () => {
     session.model.should.be.Object();
-    session.model.should.have.property('res.user');
-    var model = session.model['res.user'];
+    session.model.should.have.property('ir.model');
+    var model = session.model['ir.model'];
     model.should.be.Object();
   });
   after('stops session', () => {
