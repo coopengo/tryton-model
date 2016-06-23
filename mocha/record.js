@@ -16,6 +16,21 @@ describe('Creates a simple record', () => {
         user = result;
       });
   });
+  it('sets the login', () => {
+    return user.set('login', 'john');
+  });
+  it('crashed on save empty', () => {
+    var crash = false;
+    try {
+      user.save();
+    }
+    catch (e) {
+      crash = true;
+    }
+    finally {
+      crash.should.equal(true);
+    }
+  });
   it('sets user defaults', () => {
     return user.setDefault();
   });
@@ -28,6 +43,10 @@ describe('Creates a simple record', () => {
   });
   it('saves user instance', () => {
     return user.save();
+  });
+  it('checks user id', () => {
+    user.should.have.property('id');
+    user.id.should.be.Number();
   });
   after('stops session', () => {
     return session.stop();
