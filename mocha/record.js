@@ -11,7 +11,7 @@ describe('Creates a simple record', () => {
     return session.start(data.username, data.password);
   });
   it('creates a user instance', () => {
-    return model.Record.create(session, 'res.user')
+    return model.Record(session, 'res.user')
       .then((result) => {
         user = result;
       });
