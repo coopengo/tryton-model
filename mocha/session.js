@@ -1,7 +1,8 @@
 var _ = require('underscore');
 require('should');
 var Session = require('tryton-session');
-var model = require('..');
+var Model = require('..')
+  .Model;
 var data = require('./.data');
 //
 describe('Load session access', () => {
@@ -10,6 +11,8 @@ describe('Load session access', () => {
     return session.start(data.username, data.password);
   });
   it('checks access', () => {
+    session.models.should.be.Object();
+    session.models.should.have.property('ir.model');
     session.access.should.be.Object();
     session.access.should.have.property('ir.model');
     var sample = _.sample(session.access);
@@ -20,13 +23,12 @@ describe('Load session access', () => {
     sample.should.have.property('read');
   });
   it('loads a model', () => {
-    return model.utils.loadModel(session, 'ir.model');
+    return Model.get(session, 'ir.model');
   });
   it('checks user model', () => {
-    session.model.should.be.Object();
-    session.model.should.have.property('ir.model');
-    var model = session.model['ir.model'];
-    model.should.be.Object();
+    session.models.should.have.property('ir.model');
+    var model = session.models['ir.model'];
+    model.should.be.instanceof(Model);
   });
   after('stops session', () => {
     return session.stop();
