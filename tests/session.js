@@ -11,8 +11,6 @@ describe('Load session access', () => {
     return session.start(data.username, data.password);
   });
   it('checks access', () => {
-    session.models.should.be.Object();
-    session.models.should.have.property('ir.model');
     session.access.should.be.Object();
     session.access.should.have.property('ir.model');
     var sample = _.sample(session.access);
