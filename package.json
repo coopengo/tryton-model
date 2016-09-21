@@ -10,8 +10,8 @@
   },
   "main": "lib/index.js",
   "scripts": {
-    "beautify": "js-beautify --config .jsbeautifyrc -r lib/*.js lib/**/*.js examples/*.js tests/*.js tests/.*.js",
-    "lint": "jshint -c .jshintrc lib/*.js lib/**/*.js examples/*.js && jshint -c tests/.jshintrc tests/*.js tests/.*.js",
+    "beautify": "js-beautify --config .jsbeautifyrc -r lib/*.js lib/**/*.js tests/*.js tests/.*.js",
+    "lint": "jshint -c .jshintrc lib/*.js lib/**/*.js && jshint -c tests/.jshintrc tests/*.js tests/.*.js",
     "test": "mocha tests/*"
   },
   "dependencies": {
@@ -23,7 +23,6 @@
     "underscore": "^1.8.3"
   },
   "devDependencies": {
-    "co": "^4.6.0",
     "mocha": "^3.0.2",
     "should": "^10.0.0"
   }
