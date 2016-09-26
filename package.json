@@ -1,7 +1,7 @@
 {
   "name": "tryton-model",
   "description": "Tryton Model",
-  "version": "4.0.1",
+  "version": "4.0.2",
   "license": "GPL-3.0+",
   "author": "Coopengo <support@coopengo.com>",
   "repository": {
@@ -16,12 +16,12 @@
   },
   "dependencies": {
     "debug": "^2.2.0",
-    "events": "^1.1.1",
-    "tryton-session": "^4.0.1"
+    "events": "^1.1.1"
   },
   "peerDependencies": {
     "moment": "^2.14.1",
-    "underscore": "^1.8.3"
+    "underscore": "^1.8.3",
+    "tryton-session": "^4.0.1"
   },
   "devDependencies": {
     "mocha": "^3.0.2",
