@@ -1,9 +1,9 @@
 {
   "name": "tryton-model",
   "description": "Tryton Model",
-  "version": "4.0.0",
+  "version": "4.0.1",
   "license": "GPL-3.0+",
-  "author": "Coopengo <dev@coopengo.com>",
+  "author": "Coopengo <support@coopengo.com>",
   "repository": {
     "type": "git",
     "url": "git://github.com/coopengo/tryton-model.git"
@@ -11,13 +11,13 @@
   "main": "lib/index.js",
   "scripts": {
     "beautify": "js-beautify --config .jsbeautifyrc -r lib/*.js lib/**/*.js tests/*.js tests/.*.js",
-    "lint": "jshint -c .jshintrc lib/*.js lib/**/*.js && jshint -c tests/.jshintrc tests/*.js tests/.*.js",
+    "lint": "jshint -c .jshintrc lib/*.js lib/**/*.js; jshint -c tests/.jshintrc tests/*.js tests/.*.js",
     "test": "mocha tests/*"
   },
   "dependencies": {
     "debug": "^2.2.0",
     "events": "^1.1.1",
-    "tryton-session": "^4.0.0"
+    "tryton-session": "^4.0.1"
   },
   "peerDependencies": {
     "moment": "^2.14.1",
