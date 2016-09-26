@@ -17,9 +17,10 @@
   "dependencies": {
     "debug": "^2.2.0",
     "events": "^1.1.1",
+    "tryton-session": "^4.0.0"
+  },
+  "peerDependencies": {
     "moment": "^2.14.1",
-    "tryton-base": "~4.0.0",
-    "tryton-session": "~4.0.0",
     "underscore": "^1.8.3"
   },
   "devDependencies": {
