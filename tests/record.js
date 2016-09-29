@@ -1,54 +1,61 @@
-require('should');
+var t = require('tap');
 var Session = require('tryton-session');
 var model = require('..');
 var data = require('./.data');
 //
-describe('Creates a simple record', () => {
-  var session = new Session(data.server, data.database);
-  var login = '' + Math.floor(Math.random() * 1000000);
-  var user;
-  before('starts session', () => {
-    return session.start(data.username, data.password);
-  });
-  it('creates a user instance', () => {
-    return model.Record(session, 'res.user')
-      .then((result) => {
-        user = result;
-      });
-  });
-  it('sets the login', () => {
-    return user.set('login', 'john');
-  });
-  it('crashed on save empty', () => {
-    var crash = false;
-    try {
-      user.save();
-    }
-    catch (e) {
-      crash = true;
-    }
-    finally {
-      crash.should.equal(true);
-    }
-  });
-  it('sets user defaults', () => {
-    return user.setDefault();
-  });
-  it('sets user attributes', () => {
-    return user.set({
-      name: 'Test User',
-      login: login,
-      password: login
+model.init(Session);
+var session = new Session(data.server, data.database);
+var login = '' + Math.floor(Math.random() * 1000000);
+var user;
+
+function start() {
+  return session.start(data.username, data.password);
+}
+
+function create() {
+  return model.Record(session, 'res.user')
+    .then((result) => {
+      user = result;
     });
+}
+
+function setLogin() {
+  return user.set('login', 'john');
+}
+
+function saveKO() {
+  t.throws(user.save);
+}
+
+function setDefault() {
+  return user.setDefault();
+}
+
+function set() {
+  return user.set({
+    name: 'Test User',
+    login: login,
+    password: login
   });
-  it('saves user instance', () => {
-    return user.save();
-  });
-  it('checks user id', () => {
-    user.should.have.property('id');
-    user.id.should.be.Number();
-  });
-  after('stops session', () => {
-    return session.stop();
-  });
-});
+}
+
+function save() {
+  return user.save()
+    .then(() => {
+      t.ok(user.id);
+      t.isa(user.id, 'number');
+    });
+}
+
+function stop() {
+  return session.stop();
+}
+t.test(start)
+  .then(create)
+  .then(setLogin)
+  .then(saveKO)
+  .then(setDefault)
+  .then(set)
+  .then(save)
+  .then(stop)
+  .catch(t.threw);

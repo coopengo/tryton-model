@@ -1,0 +1,49 @@
+var t = require('tap');
+var _ = require('lodash');
+var Session = require('tryton-session');
+var model = require('..');
+var data = require('./.data');
+//
+model.init(Session);
+var session = new Session(data.server, data.database);
+var users;
+
+function start() {
+  return session.start(data.username, data.password);
+}
+
+function search() {
+  return model.Group.search(session, 'res.user', {
+      limit: 10
+    })
+    .then((result) => {
+      users = result;
+      users.each((user) => {
+        t.ok(user instanceof model.Record);
+        t.isa(user.id, 'number');
+      });
+    });
+}
+
+function read() {
+  return users.read(['name', 'login'])
+    .then(() => {
+      var names = users.map((user) => user.get('name', {
+        instanciate: false
+      }));
+      _.each(names, (name) => t.isa(name, 'string'));
+      var logins = users.map((user) => user.get('login', {
+        instanciate: false
+      }));
+      _.each(logins, (login) => t.isa(login, 'string'));
+    });
+}
+
+function stop() {
+  return session.stop();
+}
+t.test(start)
+  .then(search)
+  .then(read)
+  .then(stop)
+  .catch(t.threw);
