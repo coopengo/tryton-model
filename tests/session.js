@@ -1,5 +1,6 @@
 var t = require('tap');
 var _ = require('lodash');
+var co = require('co');
 var Session = require('tryton-session');
 var model = require('..');
 var data = require('./.data');
@@ -31,27 +32,25 @@ function check() {
 }
 
 function models() {
-  return model.Model.get(session, 'ir.model')
-    .then(() => {
-      check();
-    });
+  return co(function* () {
+    yield model.Model.get(session, 'ir.model');
+    check();
+  });
 }
 
 function pack() {
-  return session.pack()
-    .then((c) => {
-      t.isa(c, 'string');
-      cache = c;
-    });
+  return co(function* () {
+    cache = yield session.pack();
+    t.isa(cache, 'string');
+  });
 }
 
 function unpack() {
-  return Session.unpack(cache)
-    .then((s) => {
-      session = s;
-      access();
-      check();
-    });
+  return co(function* () {
+    session = yield Session.unpack(cache);
+    access();
+    check();
+  });
 }
 
 function stop() {

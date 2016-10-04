@@ -1,5 +1,6 @@
 var t = require('tap');
 var _ = require('lodash');
+var co = require('co');
 var Session = require('tryton-session');
 var model = require('..');
 var data = require('./.data');
@@ -13,30 +14,29 @@ function start() {
 }
 
 function search() {
-  return model.Group.search(session, 'res.user', {
+  return co(function* () {
+    users = yield model.Group.search(session, 'res.user', {
       limit: 10
-    })
-    .then((result) => {
-      users = result;
-      users.each((user) => {
-        t.ok(user instanceof model.Record);
-        t.isa(user.id, 'number');
-      });
     });
+    users.each((user) => {
+      t.ok(user instanceof model.Record);
+      t.isa(user.id, 'number');
+    });
+  });
 }
 
 function read() {
-  return users.read(['name', 'login'])
-    .then(() => {
-      var names = users.map((user) => user.get('name', {
-        instanciate: false
-      }));
-      _.each(names, (name) => t.isa(name, 'string'));
-      var logins = users.map((user) => user.get('login', {
-        instanciate: false
-      }));
-      _.each(logins, (login) => t.isa(login, 'string'));
-    });
+  return co(function* () {
+    yield users.read(['name', 'login']);
+    var names = users.map((user) => user.get('name', {
+      instanciate: false
+    }));
+    _.each(names, (name) => t.isa(name, 'string'));
+    var logins = users.map((user) => user.get('login', {
+      instanciate: false
+    }));
+    _.each(logins, (login) => t.isa(login, 'string'));
+  });
 }
 
 function stop() {

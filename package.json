@@ -22,6 +22,7 @@
     "lodash": "^4.16.2"
   },
   "devDependencies": {
+    "co": "^4.6.0",
     "tap": "^7.1.2",
     "tryton-session": "^4.0.3"
   }

@@ -1,4 +1,5 @@
 var t = require('tap');
+var co = require('co');
 var Session = require('tryton-session');
 var model = require('..');
 var data = require('./.data');
@@ -13,10 +14,10 @@ function start() {
 }
 
 function create() {
-  return model.Record(session, 'res.user')
-    .then((result) => {
-      user = result;
-    });
+  return co(function* () {
+    user = yield model.Record(session, 'res.user');
+    t.ok(user instanceof model.Record);
+  });
 }
 
 function setLogin() {
@@ -40,11 +41,11 @@ function set() {
 }
 
 function save() {
-  return user.save()
-    .then(() => {
-      t.ok(user.id);
-      t.isa(user.id, 'number');
-    });
+  return co(function* () {
+    yield user.save();
+    t.ok(user.id);
+    t.isa(user.id, 'number');
+  });
 }
 
 function stop() {
