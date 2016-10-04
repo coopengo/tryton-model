@@ -1,7 +1,7 @@
 {
   "name": "tryton-model",
   "description": "Tryton Model",
-  "version": "4.0.4",
+  "version": "4.0.5",
   "license": "GPL-3.0+",
   "author": "Coopengo <support@coopengo.com>",
   "repository": {
@@ -19,7 +19,8 @@
     "debug": "^2.2.0",
     "events": "^1.1.1",
     "inherits": "^2.0.3",
-    "lodash": "^4.16.2"
+    "lodash": "^4.16.2",
+    "tryton-types": "^4.0.3"
   },
   "devDependencies": {
     "co": "^4.6.0",
