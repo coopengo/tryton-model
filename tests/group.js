@@ -29,11 +29,11 @@ function read() {
   return co(function* () {
     yield users.read(['name', 'login']);
     var names = users.map((user) => user.get('name', {
-      instanciate: false
+      inst: false
     }));
     _.each(names, (name) => t.isa(name, 'string'));
     var logins = users.map((user) => user.get('login', {
-      instanciate: false
+      inst: false
     }));
     _.each(logins, (login) => t.isa(login, 'string'));
   });

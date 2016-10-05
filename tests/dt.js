@@ -20,7 +20,7 @@ function test() {
     }
     yield rec.read();
     var dt = rec.get('next_call', {
-      instanciate: false
+      inst: false
     });
     t.match(dt, /\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d/);
   });
