@@ -16,15 +16,15 @@
   },
   "dependencies": {
     "assert": "^1.4.1",
-    "debug": "^2.2.0",
+    "debug": "^2.3.2",
     "events": "^1.1.1",
     "inherits": "^2.0.3",
-    "lodash": "^4.16.2",
+    "lodash": "^4.17.2",
     "tryton-types": "^4.0.3"
   },
   "devDependencies": {
     "co": "^4.6.0",
-    "tap": "^7.1.2",
-    "tryton-session": "^4.0.3"
+    "tap": "^8.0.0",
+    "tryton-session": "^4.0.6"
   }
 }
