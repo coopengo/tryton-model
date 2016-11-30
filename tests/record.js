@@ -36,7 +36,10 @@ function set() {
   return user.set({
     name: 'Test User',
     login: login,
-    password: login
+    password: login,
+    groups: [1, {
+      name: login
+    }]
   });
 }
 
