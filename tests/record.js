@@ -1,3 +1,4 @@
+var _ = require('lodash');
 var t = require('tap');
 var co = require('co');
 var Session = require('tryton-session');
@@ -36,8 +37,37 @@ function set() {
   return user.set({
     name: 'Test User',
     login: login,
-    password: login
+    password: login,
+    groups: [1, {
+      name: login
+    }]
   });
+}
+
+function removeGroups() {
+  var groups = user.get('groups', {
+    inst: false
+  });
+  t.ok(_.isArray(groups));
+  t.equal(groups.length, 2);
+  t.ok(_.includes(groups, 1));
+  return user.set('groups', '-1-');
+}
+
+function forceGroups() {
+  var groups = user.get('groups', {
+    inst: false
+  });
+  t.equal(groups.length, 1);
+  return user.set('groups', [1]);
+}
+
+function checkGroups() {
+  var groups = user.get('groups', {
+    inst: false
+  });
+  t.equal(groups.length, 1);
+  t.equal(groups[0], 1);
 }
 
 function save() {
@@ -58,5 +88,10 @@ t.test(start)
   .then(setDefault)
   .then(set)
   .then(save)
+  .then(removeGroups)
+  .then(save)
+  .then(forceGroups)
+  .then(save)
+  .then(checkGroups)
   .then(stop)
   .catch(t.threw);
