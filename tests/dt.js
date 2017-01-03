@@ -8,7 +8,7 @@ model.init(Session);
 var session = new Session(data.server, data.database);
 
 function start() {
-  return session.start(data.username, data.password);
+  return session.start(data.username, data.parameters);
 }
 
 function test() {

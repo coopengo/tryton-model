@@ -11,7 +11,7 @@ var login = '' + Math.floor(Math.random() * 1000000);
 var user;
 
 function start() {
-  return session.start(data.username, data.password);
+  return session.start(data.username, data.parameters);
 }
 
 function create() {

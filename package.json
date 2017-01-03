@@ -1,7 +1,7 @@
 {
   "name": "tryton-model",
   "description": "Tryton Model",
-  "version": "4.0.15",
+  "version": "4.2.0",
   "license": "GPL-3.0+",
   "author": "Coopengo <support@coopengo.com>",
   "repository": {
@@ -15,16 +15,16 @@
     "test": "tap tests/*"
   },
   "dependencies": {
-    "assert": "^1.4.1",
-    "debug": "^2.4.5",
-    "events": "^1.1.1",
-    "inherits": "^2.0.3",
-    "lodash": "^4.17.2",
-    "tryton-types": "~4.2.0"
+    "assert": "^1",
+    "debug": "^2",
+    "events": "^1",
+    "inherits": "^2",
+    "lodash": "^4",
+    "tryton-types": "~4.2"
   },
   "devDependencies": {
-    "co": "^4.6.0",
-    "tap": "^8.0.0",
-    "tryton-session": "~4.2.0"
+    "co": "^4",
+    "tap": "^8",
+    "tryton-session": "~4.2"
   }
 }
