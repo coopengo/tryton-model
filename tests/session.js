@@ -1,13 +1,13 @@
-var t = require('tap');
-var _ = require('lodash');
-var co = require('co');
-var Session = require('tryton-session');
-var model = require('..');
-var data = require('./.data');
+const t = require('tap');
+const _ = require('lodash');
+const co = require('co');
+const Session = require('tryton-session');
+const model = require('..');
+const data = require('./.data');
 //
 model.init(Session);
-var session = new Session(data.server, data.database);
-var cache;
+let session = new Session(data.server, data.database);
+let cache;
 
 function start() {
   return session.start(data.username, data.parameters);
@@ -16,7 +16,7 @@ function start() {
 function access() {
   t.ok(_.isPlainObject(session.access));
   t.ok(session.access['ir.model']);
-  var sample = _.sample(session.access);
+  const sample = _.sample(session.access);
   t.ok(_.isPlainObject(sample));
   t.ok(!_.isNil(sample.create));
   t.ok(!_.isNil(sample.read));
@@ -27,7 +27,7 @@ function access() {
 function check() {
   t.ok(_.isPlainObject(session.models));
   t.ok(session.models['ir.model']);
-  var m = session.models['ir.model'];
+  const m = session.models['ir.model'];
   t.ok(m instanceof model.Model);
 }
 

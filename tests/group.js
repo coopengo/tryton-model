@@ -1,13 +1,13 @@
-var t = require('tap');
-var _ = require('lodash');
-var co = require('co');
-var Session = require('tryton-session');
-var model = require('..');
-var data = require('./.data');
+const t = require('tap');
+const _ = require('lodash');
+const co = require('co');
+const Session = require('tryton-session');
+const model = require('..');
+const data = require('./.data');
 //
 model.init(Session);
-var session = new Session(data.server, data.database);
-var users;
+const session = new Session(data.server, data.database);
+let users;
 
 function start() {
   return session.start(data.username, data.parameters);
@@ -28,14 +28,43 @@ function search() {
 function read() {
   return co(function* () {
     yield users.read(['name', 'login']);
-    var names = users.map((user) => user.get('name', {
+    const names = users.map((user) => user.get('name', {
       inst: false
     }));
     _.each(names, (name) => t.isa(name, 'string'));
-    var logins = users.map((user) => user.get('login', {
+    const myUsers = model.Group.group(session, users.map());
+    const logins = myUsers.get('login', {
+      inst: false
+    });
+    _.each(logins, (login) => t.isa(login, 'string'));
+  });
+}
+
+function readCrash() {
+  return co(function* () {
+    const bak = session.token;
+    session.token = '123';
+    yield users.read()
+      .then(() => t.ok(false), (err) => t.type(err, 'object'));
+    session.token = bak;
+  });
+}
+
+function getNotField() {
+  return co(function* () {
+    yield users.read();
+    t.throws(users.get.bind(users, 'hello', {
       inst: false
     }));
-    _.each(logins, (login) => t.isa(login, 'string'));
+  });
+}
+
+function getNotRead() {
+  return co(function* () {
+    yield users.read();
+    t.throws(users.get.bind(users, 'groups', {
+      inst: false
+    }));
   });
 }
 
@@ -45,5 +74,8 @@ function stop() {
 t.test(start)
   .then(search)
   .then(read)
+  .then(readCrash)
+  .then(getNotField)
+  .then(getNotRead)
   .then(stop)
   .catch(t.threw);
