@@ -1,6 +1,6 @@
 exports.server = 'http://localhost:8000';
-exports.database = 'tryton';
-exports.username = 'admin';
+exports.database = process.env.TRYTON_MODEL_TEST_DB || 'tryton';
+exports.username = process.env.TRYTON_MODEL_TEST_USER || 'admin';
 exports.parameters = {
-  password: 'admin'
+  password: process.env.TRYTON_MODEL_TEST_PWD || 'admin'
 };

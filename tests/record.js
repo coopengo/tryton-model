@@ -46,6 +46,24 @@ function create2ManyOnTheFly() {
   });
 }
 
+function getNotField() {
+  return co(function* () {
+    yield user.read();
+    t.throws(user.get.bind(user, 'hello', {
+      inst: false
+    }));
+  });
+}
+
+function getNotRead() {
+  return co(function* () {
+    yield user.read();
+    t.throws(user.get.bind(user, 'groups', {
+      inst: false
+    }));
+  });
+}
+
 function remove2ManyItem() {
   return co(function* () {
     yield user.read('groups');
@@ -85,6 +103,8 @@ t.test(start)
   .then(create)
   .then(missingData)
   .then(create2ManyOnTheFly)
+  .then(getNotField)
+  .then(getNotRead)
   .then(remove2ManyItem)
   .then(force2ManyList)
   .then(readCrash)

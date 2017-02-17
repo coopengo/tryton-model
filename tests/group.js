@@ -50,6 +50,24 @@ function readCrash() {
   });
 }
 
+function getNotField() {
+  return co(function* () {
+    yield users.read();
+    t.throws(users.get.bind(users, 'hello', {
+      inst: false
+    }));
+  });
+}
+
+function getNotRead() {
+  return co(function* () {
+    yield users.read();
+    t.throws(users.get.bind(users, 'groups', {
+      inst: false
+    }));
+  });
+}
+
 function stop() {
   return session.stop();
 }
@@ -57,5 +75,7 @@ t.test(start)
   .then(search)
   .then(read)
   .then(readCrash)
+  .then(getNotField)
+  .then(getNotRead)
   .then(stop)
   .catch(t.threw);
