@@ -1,3 +1,4 @@
+const _ = require('lodash');
 const t = require('tap');
 const co = require('co');
 const Session = require('tryton-session');
@@ -22,16 +23,26 @@ function create() {
 
 function missingData() {
   return co(function* () {
-    yield user.set('login', 'john');
+    user.set({
+      password: login
+    });
     yield user.save()
       .then(() => t.ok(false), (err) => t.type(err, 'object'));
   });
 }
 
+function setDefault() {
+  return co(function* () {
+    yield user.setDefault(null, {
+      sync: true
+    });
+    t.notOk(_.isEmpty(user.attrs));
+  });
+}
+
 function create2ManyOnTheFly() {
   return co(function* () {
-    yield user.setDefault();
-    yield user.set({
+    user.set({
       name: 'Test User',
       login: login,
       password: login,
@@ -41,36 +52,38 @@ function create2ManyOnTheFly() {
     });
     yield user.save();
     yield user.read('groups');
-    const groups = yield user.get('groups');
+    const groups = yield user.get('groups', {
+      inst: true
+    });
     t.equal(groups.size(), 2);
   });
 }
 
 function getNotField() {
   return co(function* () {
+    user.reset();
     yield user.read();
-    t.throws(user.get.bind(user, 'hello', {
-      inst: false
-    }));
+    t.throws(user.get.bind(user, 'hello'));
   });
 }
 
 function getNotRead() {
   return co(function* () {
+    user.reset();
     yield user.read();
-    t.throws(user.get.bind(user, 'groups', {
-      inst: false
-    }));
+    t.throws(user.get.bind(user, 'groups'));
   });
 }
 
 function remove2ManyItem() {
   return co(function* () {
     yield user.read('groups');
-    yield user.set('groups', '-1-');
+    user.set('groups', '-1-');
     yield user.save();
     yield user.read('groups');
-    const groups = yield user.get('groups');
+    const groups = yield user.get('groups', {
+      inst: true
+    });
     t.equal(groups.size(), 1);
   });
 }
@@ -78,10 +91,12 @@ function remove2ManyItem() {
 function force2ManyList() {
   return co(function* () {
     yield user.read('groups');
-    yield user.set('groups', [1]);
+    user.set('groups', [1]);
     yield user.save();
     yield user.read('groups');
-    const groups = yield user.get('groups');
+    const groups = yield user.get('groups', {
+      inst: true
+    });
     t.equal(groups.size(), 1);
   });
 }
@@ -90,6 +105,7 @@ function readCrash() {
   return co(function* () {
     const bak = session.token;
     session.token = '123';
+    user.reset();
     yield user.read()
       .then(() => t.ok(false), (err) => t.type(err, 'object'));
     session.token = bak;
@@ -102,6 +118,7 @@ function stop() {
 t.test(start)
   .then(create)
   .then(missingData)
+  .then(setDefault)
   .then(create2ManyOnTheFly)
   .then(getNotField)
   .then(getNotRead)

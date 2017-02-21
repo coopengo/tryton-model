@@ -44,6 +44,7 @@ function readCrash() {
   return co(function* () {
     const bak = session.token;
     session.token = '123';
+    users.reset();
     yield users.read()
       .then(() => t.ok(false), (err) => t.type(err, 'object'));
     session.token = bak;
@@ -52,6 +53,7 @@ function readCrash() {
 
 function getNotField() {
   return co(function* () {
+    users.reset();
     yield users.read();
     t.throws(users.get.bind(users, 'hello', {
       inst: false
@@ -61,6 +63,7 @@ function getNotField() {
 
 function getNotRead() {
   return co(function* () {
+    users.reset();
     yield users.read();
     t.throws(users.get.bind(users, 'groups', {
       inst: false
