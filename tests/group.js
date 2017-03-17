@@ -13,6 +13,13 @@ function start() {
   return session.start(data.username, data.parameters);
 }
 
+function count() {
+  return co(function* () {
+    var c = yield model.Group.count(session, 'res.user');
+    t.isa(c, 'number');
+  });
+}
+
 function search() {
   return co(function* () {
     users = yield model.Group.search(session, 'res.user', {
@@ -75,6 +82,7 @@ function stop() {
   return session.stop();
 }
 t.test(start)
+  .then(count)
   .then(search)
   .then(read)
   .then(readCrash)
