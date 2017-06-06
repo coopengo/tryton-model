@@ -1,86 +1,87 @@
-const t = require('tap');
-const _ = require('lodash');
-const co = require('co');
-const Session = require('tryton-session');
-const model = require('..');
-const data = require('./.data');
-//
-model.init(Session);
-const session = new Session(data.server, data.database);
-let users;
+const t = require('tap')
+const _ = require('lodash')
+const co = require('co')
+const Session = require('tryton-session')
+const model = require('..')
+const data = require('./.data')
 
-function start() {
-  return session.start(data.username, data.parameters);
+model.init(Session)
+const session = new Session(data.server, data.database)
+let users
+
+function start () {
+  return session.start(data.username, data.parameters)
 }
 
-function count() {
-  return co(function* () {
-    var c = yield model.Group.count(session, 'res.user');
-    t.isa(c, 'number');
-  });
+function count () {
+  return co(function * () {
+    var c = yield model.Group.count(session, 'res.user')
+    t.isa(c, 'number')
+  })
 }
 
-function search() {
-  return co(function* () {
+function search () {
+  return co(function * () {
     users = yield model.Group.search(session, 'res.user', {
       limit: 10
-    });
+    })
     users.each((user) => {
-      t.ok(user instanceof model.Record);
-      t.isa(user.id, 'number');
-    });
-  });
+      t.ok(user instanceof model.Record)
+      t.isa(user.id, 'number')
+    })
+  })
 }
 
-function read() {
-  return co(function* () {
-    yield users.read(['name', 'login']);
+function read () {
+  return co(function * () {
+    yield users.read(['name', 'login'])
     const names = users.map((user) => user.get('name', {
       inst: false
-    }));
-    _.each(names, (name) => t.isa(name, 'string'));
-    const myUsers = model.Group.group(session, users.map());
+    }))
+    _.each(names, (name) => t.isa(name, 'string'))
+    const myUsers = model.Group.group(session, users.map())
     const logins = myUsers.get('login', {
       inst: false
-    });
-    _.each(logins, (login) => t.isa(login, 'string'));
-  });
+    })
+    _.each(logins, (login) => t.isa(login, 'string'))
+  })
 }
 
-function readCrash() {
-  return co(function* () {
-    const bak = session.token;
-    session.token = '123';
-    users.reset();
+function readCrash () {
+  return co(function * () {
+    const bak = session.token
+    session.token = '123'
+    users.reset()
     yield users.read()
-      .then(() => t.ok(false), (err) => t.type(err, 'object'));
-    session.token = bak;
-  });
+      .then(() => t.ok(false), (err) => t.type(err, 'object'))
+    session.token = bak
+  })
 }
 
-function getNotField() {
-  return co(function* () {
-    users.reset();
-    yield users.read();
+function getNotField () {
+  return co(function * () {
+    users.reset()
+    yield users.read()
     t.throws(users.get.bind(users, 'hello', {
       inst: false
-    }));
-  });
+    }))
+  })
 }
 
-function getNotRead() {
-  return co(function* () {
-    users.reset();
-    yield users.read();
+function getNotRead () {
+  return co(function * () {
+    users.reset()
+    yield users.read()
     t.throws(users.get.bind(users, 'groups', {
       inst: false
-    }));
-  });
+    }))
+  })
 }
 
-function stop() {
-  return session.stop();
+function stop () {
+  return session.stop()
 }
+
 t.test(start)
   .then(count)
   .then(search)
@@ -89,4 +90,4 @@ t.test(start)
   .then(getNotField)
   .then(getNotRead)
   .then(stop)
-  .catch(t.threw);
+  .catch(t.threw)
