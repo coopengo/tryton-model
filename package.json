@@ -1,7 +1,7 @@
 {
   "name": "tryton-model",
   "description": "Tryton Model",
-  "version": "4.2.16",
+  "version": "4.2.17",
   "license": "GPL-3.0+",
   "author": "Coopengo <support@coopengo.com>",
   "repository": {
