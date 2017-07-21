@@ -8,6 +8,7 @@ const data = require('./.data')
 model.init(Session)
 const session = new Session(data.server, data.database)
 const login = '' + Math.floor(Math.random() * 1000000)
+const password = 'Abcdefghijk' + login  // len > 8 and entropy >= 0.75
 let user
 
 function start () {
@@ -24,7 +25,7 @@ function create () {
 function missingData () {
   return co(function * () {
     user.set({
-      password: login
+      password: password
     })
     yield user.save()
       .then(() => t.ok(false), (err) => t.type(err, 'object'))
@@ -45,7 +46,7 @@ function create2ManyOnTheFly () {
     user.set({
       name: 'Test User',
       login: login,
-      password: login,
+      password: password,
       groups: [1, {
         name: login
       }]
