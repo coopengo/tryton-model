@@ -1,6 +1,5 @@
 const t = require('tap')
 const _ = require('lodash')
-const co = require('co')
 const Session = require('tryton-session')
 const model = require('..')
 const data = require('./.data')
@@ -9,11 +8,11 @@ model.init(Session)
 let session = new Session(data.server, data.database)
 let cache
 
-function start () {
-  return session.start(data.username, data.parameters)
+const start = async () => {
+  await session.start(data.username, {password: data.password})
 }
 
-function access () {
+const access = async () => {
   t.ok(_.isPlainObject(session.access))
   t.ok(session.access['ir.model'])
   const sample = _.sample(session.access)
@@ -24,37 +23,31 @@ function access () {
   t.ok(!_.isNil(sample.delete))
 }
 
-function check () {
+const check = async () => {
   t.ok(_.isPlainObject(session.models))
   t.ok(session.models['ir.model'])
   const m = session.models['ir.model']
   t.ok(m instanceof model.Model)
 }
 
-function models () {
-  return co(function * () {
-    yield model.Model.get(session, 'ir.model')
-    check()
-  })
+const models = async () => {
+  await model.Model.get(session, 'ir.model')
+  check()
 }
 
-function pack () {
-  return co(function * () {
-    cache = yield session.pack()
-    t.isa(cache, 'string')
-  })
+const pack = async () => {
+  cache = await session.pack()
+  t.isa(cache, 'string')
 }
 
-function unpack () {
-  return co(function * () {
-    session = yield Session.unpack(cache)
-    access()
-    check()
-  })
+const unpack = async () => {
+  session = await Session.unpack(cache)
+  access()
+  check()
 }
 
-function stop () {
-  return session.stop()
+const stop = async () => {
+  await session.stop()
 }
 
 t.test(start)

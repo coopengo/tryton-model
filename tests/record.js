@@ -1,6 +1,5 @@
 const _ = require('lodash')
 const t = require('tap')
-const co = require('co')
 const Session = require('tryton-session')
 const model = require('..')
 const data = require('./.data')
@@ -11,110 +10,90 @@ const login = '' + Math.floor(Math.random() * 1000000)
 const password = 'Abcdefghijk' + login  // len > 8 and entropy >= 0.75
 let user
 
-function start () {
-  return session.start(data.username, data.parameters)
+const start = async () => {
+  await session.start(data.username, {password: data.password})
 }
 
-function create () {
-  return co(function * () {
-    user = yield model.Record(session, 'res.user')
-    t.ok(user instanceof model.Record)
+const create = async () => {
+  user = await model.Record(session, 'res.user')
+  t.ok(user instanceof model.Record)
+}
+
+const missingData = async () => {
+  user.set({
+    password: password
   })
+  await t.rejects(user.save())
 }
 
-function missingData () {
-  return co(function * () {
-    user.set({
-      password: password
-    })
-    yield user.save()
-      .then(() => t.ok(false), (err) => t.type(err, 'object'))
+const setDefault = async () => {
+  await user.setDefault(null, {
+    sync: true
   })
+  t.notOk(_.isEmpty(user.attrs))
 }
 
-function setDefault () {
-  return co(function * () {
-    yield user.setDefault(null, {
-      sync: true
-    })
-    t.notOk(_.isEmpty(user.attrs))
+const create2ManyOnTheFly = async () => {
+  user.set({
+    name: 'Test User',
+    login: login,
+    password: password,
+    groups: [1, {
+      name: login
+    }]
   })
-}
-
-function create2ManyOnTheFly () {
-  return co(function * () {
-    user.set({
-      name: 'Test User',
-      login: login,
-      password: password,
-      groups: [1, {
-        name: login
-      }]
-    })
-    yield user.save()
-    yield user.read('groups')
-    const groups = yield user.get('groups', {
-      inst: true
-    })
-    t.equal(groups.size(), 2)
+  await user.save()
+  await user.read('groups')
+  const groups = await user.get('groups', {
+    inst: true
   })
+  t.equal(groups.size(), 2)
 }
 
-function getNotField () {
-  return co(function * () {
-    user.reset()
-    yield user.read()
-    t.throws(user.get.bind(user, 'hello'))
+const getNotField = async () => {
+  user.reset()
+  await user.read()
+  t.throws(user.get.bind(user, 'hello'))
+}
+
+const getNotRead = async () => {
+  user.reset()
+  await user.read()
+  t.throws(user.get.bind(user, 'groups'))
+}
+
+const remove2ManyItem = async () => {
+  await user.read('groups')
+  user.set('groups', '-1-')
+  await user.save()
+  await user.read('groups')
+  const groups = await user.get('groups', {
+    inst: true
   })
+  t.equal(groups.size(), 1)
 }
 
-function getNotRead () {
-  return co(function * () {
-    user.reset()
-    yield user.read()
-    t.throws(user.get.bind(user, 'groups'))
+const force2ManyList = async () => {
+  await user.read('groups')
+  user.set('groups', [1])
+  await user.save()
+  await user.read('groups')
+  const groups = await user.get('groups', {
+    inst: true
   })
+  t.equal(groups.size(), 1)
 }
 
-function remove2ManyItem () {
-  return co(function * () {
-    yield user.read('groups')
-    user.set('groups', '-1-')
-    yield user.save()
-    yield user.read('groups')
-    const groups = yield user.get('groups', {
-      inst: true
-    })
-    t.equal(groups.size(), 1)
-  })
+const readCrash = async () => {
+  const bak = session.session
+  session.session = '123'
+  user.reset()
+  await t.rejects(user.read())
+  session.session = bak
 }
 
-function force2ManyList () {
-  return co(function * () {
-    yield user.read('groups')
-    user.set('groups', [1])
-    yield user.save()
-    yield user.read('groups')
-    const groups = yield user.get('groups', {
-      inst: true
-    })
-    t.equal(groups.size(), 1)
-  })
-}
-
-function readCrash () {
-  return co(function * () {
-    const bak = session.token
-    session.token = '123'
-    user.reset()
-    yield user.read()
-      .then(() => t.ok(false), (err) => t.type(err, 'object'))
-    session.token = bak
-  })
-}
-
-function stop () {
-  return session.stop()
+const stop = async () => {
+  await session.stop()
 }
 
 t.test(start)

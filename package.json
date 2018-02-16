@@ -21,9 +21,8 @@
     "tryton-types": "~4.6"
   },
   "devDependencies": {
-    "co": "^4",
     "standard": "latest",
-    "tap": "^8",
+    "tap": "latest",
     "tryton-session": "~4.6"
   }
 }
