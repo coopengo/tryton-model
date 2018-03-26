@@ -7,7 +7,7 @@ const data = require('./.data')
 model.init(Session)
 const session = new Session(data.server, data.database)
 const login = '' + Math.floor(Math.random() * 1000000)
-const password = 'Abcdefghijk' + login  // len > 8 and entropy >= 0.75
+const password = 'Abcdefghijk' + login // len > 8 and entropy >= 0.75
 let user
 
 const start = async () => {
@@ -92,6 +92,18 @@ const readCrash = async () => {
   session.session = bak
 }
 
+const del = async () => {
+  const groups = await model.Group.search(session, 'res.group',
+    {domain: ['name', '=', login]})
+  const group = groups.first()
+  const id = group.id
+  await group.del()
+  t.equal(group.id, 0)
+  t.equal(group.delPromise, true)
+  const zombie = await model.Record(session, 'res.group', id)
+  await t.rejects(zombie.read())
+}
+
 const stop = async () => {
   await session.stop()
 }
@@ -106,5 +118,6 @@ t.test(start)
   .then(remove2ManyItem)
   .then(force2ManyList)
   .then(readCrash)
+  .then(del)
   .then(stop)
   .catch(t.threw)
