@@ -28,6 +28,9 @@ const check = async () => {
   t.ok(session.models['ir.model'])
   const m = session.models['ir.model']
   t.ok(m instanceof model.Model)
+  t.ok(_.isPlainObject(session.modules))
+  t.ok(session.modules.ir === true)
+  t.ok(session.modules.res === true)
 }
 
 const models = async () => {
