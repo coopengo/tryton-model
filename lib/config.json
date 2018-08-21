@@ -1,0 +1,7 @@
+{
+    "domain": {
+        "contract": ["subscriber"],
+        "party.party": ["id"]
+    }
+}
+
