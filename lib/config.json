@@ -1,7 +1,0 @@
-{
-    "domain": {
-        "contract": [["in", "parties"]],
-        "party.party": [["=", "id]"]
-    }
-}
-
