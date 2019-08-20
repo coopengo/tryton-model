@@ -92,11 +92,6 @@ const readCrash = async () => {
   session.session = bak
 }
 
-const testCreateNoSetter = async () => {
-  user = await model.Record(session, 'res.user')
-  t.ok(user instanceof model.Record)
-}
-
 const testWriteNoSetter = async () => {
   user.reset()
   await user.read('pyson_menu')
