@@ -17,7 +17,7 @@ const test = async () => {
     return
   }
   await rec.read()
-  const dt = rec.get('next_call', {
+  const dt = rec.get('create_date', {
     inst: false
   })
   t.match(dt, /\d\d\d\d-\d\d-\d\d \d\d:\d\d:\d\d.\d\d\d/)

@@ -92,6 +92,20 @@ const readCrash = async () => {
   session.session = bak
 }
 
+const testCreateNoSetter = async () => {
+  user = await model.Record(session, 'res.user')
+  t.ok(user instanceof model.Record)
+}
+
+const testWriteNoSetter = async () => {
+  user.reset()
+  await user.read('pyson_menu')
+  user.set({
+    'pyson_menu': 'ho noes!'
+  })
+  await user.save()
+}
+
 const del = async () => {
   const groups = await model.Group.search(session, 'res.group',
     {domain: ['name', '=', login]})
@@ -118,6 +132,7 @@ t.test(start)
   .then(remove2ManyItem)
   .then(force2ManyList)
   .then(readCrash)
+  .then(testNoSetter)
   .then(del)
   .then(stop)
   .catch(t.threw)
