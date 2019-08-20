@@ -93,6 +93,10 @@ const readCrash = async () => {
 }
 
 const testWriteNoSetter = async () => {
+  // Trytond 5.2 does allow silent write on
+  // a function field without setter
+  // So, as a circumvention
+  // we filter them out on write and create
   user.reset()
   await user.read('pyson_menu')
   user.set({
@@ -127,7 +131,7 @@ t.test(start)
   .then(remove2ManyItem)
   .then(force2ManyList)
   .then(readCrash)
-  .then(testNoSetter)
+  .then(testWriteNoSetter)
   .then(del)
   .then(stop)
   .catch(t.threw)
