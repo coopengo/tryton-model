@@ -92,6 +92,19 @@ const readCrash = async () => {
   session.session = bak
 }
 
+const testWriteNoSetter = async () => {
+  // Trytond 5.2 does allow silent write on
+  // a function field without setter
+  // So, as a circumvention
+  // we filter them out on write and create
+  user.reset()
+  await user.read('pyson_menu')
+  user.set({
+    'pyson_menu': 'ho noes!'
+  })
+  await user.save()
+}
+
 const del = async () => {
   const groups = await model.Group.search(session, 'res.group',
     {domain: ['name', '=', login]})
@@ -118,6 +131,7 @@ t.test(start)
   .then(remove2ManyItem)
   .then(force2ManyList)
   .then(readCrash)
+  .then(testWriteNoSetter)
   .then(del)
   .then(stop)
   .catch(t.threw)
