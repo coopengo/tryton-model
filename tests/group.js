@@ -28,7 +28,7 @@ const search = async () => {
 }
 
 const read = async () => {
-  await users.read(['name', 'login'])
+  await users.read('*')
   const names = users.map((user) => user.get('name', {
     inst: false
   }))
