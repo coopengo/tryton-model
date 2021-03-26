@@ -18,7 +18,7 @@
     "events": "^1",
     "inherits": "^2",
     "lodash": "^4",
-    "tryton-types": "~4.6"
+    "tryton-types": "~4.8.0"
   },
   "devDependencies": {
     "standard": "^11.0.1",
